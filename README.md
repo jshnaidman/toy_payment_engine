@@ -1,3 +1,22 @@
+# Description
+
+This is a toy payment engine that receives a csv file with columns `type`, `client`, `tx`, and `amount`. It outputs a csv with columns:
+
+- `available`: The total funds that are available
+- `held`: The total funds that are held for dispute
+- `total`: The total funds that are available or held (available + held)
+- `locked`: Whether the account is locked. An account is locked if a charge back occurs
+
+This application assumes a precision of four palces past the decimal in the output, and outputs values with that level of precision.
+
+A transaction can be either a withdrawal or deposit. Deposits can be disputed.
+
+A dispute represents a client's claim that a transaction was erroneous and should be reversed. The transaction shouldn't be reversed yet but the associated funds should be held. This means that the clients available funds should decrease by the amount disputed, their held funds should increase by the amount disputed, while their total funds should remain the same. Disputes reference a transaction ID.
+
+A resolve represents a resolution to a dispute, releasing the associated held funds. Funds that were previously disputed are no longer disputed. This means that the clients held funds should decrease by the amount no longer disputed, their available funds should increase by the amount no longer disputed, and their total funds should remain the same.
+
+A chargeback is the final state of a dispute and represents the client reversing a transaction. Funds that were held have now been withdrawn. This means that the clients held funds and total funds should decrease by the amount previously disputed. If a chargeback occurs the client's account should be immediately frozen/locked.
+
 # How to run
 
 ```
